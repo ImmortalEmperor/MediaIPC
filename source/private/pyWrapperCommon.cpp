@@ -1,9 +1,9 @@
-#include "pybind11/pybind11.h"
 #include "pybind11/chrono.h"
-#include "RingBuffer.h"
 #include "../public/MediaBase.h"
 #include "../public/ControlBlock.h"
 #include "../public/Formats.h"
+#include "RingBuffer.h"
+#include "IPCUtils.h"
 
 namespace py = pybind11;
 
@@ -12,11 +12,6 @@ void init_pyConsumer(py::module &);
 
 PYBIND11_MODULE(pyMediaIPC, m)
 {
-    py::class_<MediaIPC::RingBuffer>(m, "RingBuffer")
-        .def(py::init<uint8_t *, uint32_t, uint32_t *>())
-        .def("read", &MediaIPC::RingBuffer::read)
-        .def("write", &MediaIPC::RingBuffer::write);
-
     py::class_<MediaIPC::MediaBase>(m, "MediaBase")
         .def(py::init<>());
 
@@ -30,6 +25,7 @@ PYBIND11_MODULE(pyMediaIPC, m)
 	    #include "../public/AudioFormats.inc"
         .value("None", MediaIPC::AudioFormat::None);
 
+    
     py::class_<MediaIPC::ControlBlock>(m, "ControlBlock")
         .def(py::init<>())
         .def("calculateVideoBufsize", &MediaIPC::ControlBlock::calculateVideoBufsize)
@@ -38,12 +34,13 @@ PYBIND11_MODULE(pyMediaIPC, m)
         .def("calculateAudioInterval", &MediaIPC::ControlBlock::calculateAudioInterval)
         .def_readwrite("width", &MediaIPC::ControlBlock::width)
         .def_readwrite("height", &MediaIPC::ControlBlock::height)
+        .def_readwrite("frameRate", &MediaIPC::ControlBlock::frameRate)
         .def_readwrite("videoFormat", &MediaIPC::ControlBlock::videoFormat)
-        .def_readwrite("channels", &MediaIPC::ControlBlock::calculateAudioInterval)
+        .def_readwrite("channels", &MediaIPC::ControlBlock::channels)
         .def_readwrite("sampleRate", &MediaIPC::ControlBlock::sampleRate)
         .def_readwrite("samplesPerBuffer", &MediaIPC::ControlBlock::samplesPerBuffer)
-        .def_readwrite("channels", &MediaIPC::ControlBlock::calculateAudioInterval)
         .def_readwrite("audioFormat", &MediaIPC::ControlBlock::audioFormat);
+    
 
     init_pyProducer(m);
     init_pyConsumer(m);

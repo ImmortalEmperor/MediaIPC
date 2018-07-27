@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Enable all relevant compiler warnings
 if (MSVC)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W2 /MD")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Od /W2 /MD")
 else()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 endif()
@@ -44,7 +44,7 @@ set(WRAPPER_SOURCES
 	${LIBRARY_SOURCES}
 	source/private/pyWrapperCommon.cpp
 	source/private/pyWrapperProducer.cpp	
-	# source/private/pyWrapperConsumer.cpp
+	source/private/pyWrapperConsumer.cpp
 )
 
 pybind11_add_module(pyMediaIPC ${WRAPPER_SOURCES})

@@ -9,5 +9,4 @@ void init_pyProducer(py::module &m) {
         .def("submitVideoFrame", &MediaIPC::MediaProducer::submitVideoFrame)
         .def("submitAudioSamples", &MediaIPC::MediaProducer::submitAudioSamples)
         .def("stop", &MediaIPC::MediaProducer::stop);
-
 }
