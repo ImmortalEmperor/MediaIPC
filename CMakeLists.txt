@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(MediaIPC)
+project(MediaIPC C CXX)
 
 # Set the C++ standard to C++11
 set(CMAKE_CXX_STANDARD 11)
@@ -19,8 +19,11 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/conanbuildinfo.cmake")
 	conan_basic_setup()
 endif()
 
+add_subdirectory(pybind11)
+
 # Locate the Boost headers
 find_package(Boost 1.64 REQUIRED)
+
 include_directories(${Boost_INCLUDE_DIRS} SYSTEM)
 
 # Build libMediaIPC
@@ -36,8 +39,18 @@ set(LIBRARY_SOURCES
 )
 add_library(MediaIPC STATIC ${LIBRARY_SOURCES})
 
+# Build pybind11 wrappers
+set(WRAPPER_SOURCES
+	${LIBRARY_SOURCES}
+	source/private/pyWrapperCommon.cpp
+	source/private/pyWrapperProducer.cpp	
+	# source/private/pyWrapperConsumer.cpp
+)
+
+pybind11_add_module(pyMediaIPC ${WRAPPER_SOURCES})
+
 # Determine if we are building our example producers and consumers
-option(BUILD_EXAMPLES "build example producer and consumer executables" ON)
+option(BUILD_EXAMPLES "build example producer and consumer executables" OFF)
 if (BUILD_EXAMPLES)
 	
 	# Under Linux and macOS, link against pthreads and librt
